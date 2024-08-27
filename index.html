@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encriptador - Desencriptador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <div class="logo">Mario</div>
+            <textarea id="input" placeholder="Ingrese el texto aquí"></textarea>
+            <div class="buttons">
+                <button class="encrypt-btn" onclick="processText('encrypt')">Encriptar</button>
+                <button class="decrypt-btn" onclick="processText('decrypt')">Desencriptar</button>
+            </div>
+        </div>
+        <div class="output-section">
+            <div id="no-message" class="no-message">
+                <img src="imagen.png" alt="No message found">
+                <h2>Ningún mensaje fue encontrado</h2>
+                <p>Ingresa el texto que desees encriptar o desencriptar.</p>
+            </div>
+            <div id="result"></div>
+            <button id="copy-btn" class="copy-btn" onclick="copyToClipboard()">Copiar</button>
+        </div>
+    </div>
+
+    <script>
+        const encryptionRules = {
+            'e': 'enter', 'i': 'imes', 'a': 'ai', 'o': 'ober', 'u': 'ufat'
+        };
+
+        function processText(action) {
+            let input = document.getElementById('input').value.toLowerCase();
+            let result = '';
+
+            if (action === 'encrypt') {
+                result = input.replace(/[eiaou]/g, letter => encryptionRules[letter]);
+            } else {
+                result = input;
+                for (let [key, value] of Object.entries(encryptionRules)) {
+                    result = result.replace(new RegExp(value, 'g'), key);
+                }
+            }
+
+            document.getElementById('result').innerText = result;
+            document.getElementById('no-message').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('copy-btn').style.display = 'block';
+        }
+
+        function copyToClipboard() {
+            const result = document.getElementById('result');
+            navigator.clipboard.writeText(result.innerText)
+                .then(() => alert('Texto copiado al portapapeles'))
+                .catch(err => console.error('Error al copiar: ', err));
+        }
+
+        document.getElementById('input').addEventListener('input', function() {
+            this.value = this.value.toLowerCase().replace(/[^a-z\s]/g, '');
+        });
+    </script>
+</body>
+</html>
